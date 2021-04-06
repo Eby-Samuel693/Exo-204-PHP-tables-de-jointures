@@ -18,10 +18,24 @@ $user = 'root';
 $pass = '';
 
 $bdd = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $user, $pass);
+$sql = $bdd->prepare("INSERT INTO user (id,username,password,email)
+                VALUES ('1','Doe','sam','Eby','test@coucou.com')");
 
-require_once 'db.php';
-$request = $conn ->prepar("
-    SELECT 
-        
+$sql2 = $bdd->prepare("INSERT INTO role (id,blanc)
+                VALUES ('1','rouge')");
 
+
+
+require_once 'exer_204.php';
+$request = $bdd->prepare("
+    SELECT
+            user.id, username.id, user.email, user.password, user.email 
+            FROM JOIN user_fk ON user.role = user.user_fk
 ");
+
+$request->execute();
+echo "<pre>";
+print_r($request->fetchAll());
+echo "</pre>";
+
+
