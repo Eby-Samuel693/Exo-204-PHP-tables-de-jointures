@@ -17,25 +17,32 @@ $db = 'exer_204';
 $user = 'root';
 $pass = '';
 
-$bdd = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $user, $pass);
-$sql = $bdd->prepare("INSERT INTO user (id,username,password,email)
-                VALUES ('1','Doe','sam','Eby','test@coucou.com')");
+$servername = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'exo204';
 
-$sql2 = $bdd->prepare("INSERT INTO role (id,blanc)
-                VALUES ('1','rouge')");
+try {
+    $bdd = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $bdd->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-
-
-require_once 'exer_204.php';
-$request = $bdd->prepare("
-    SELECT
-            user.id, username.id, user.email, user.password, user.email 
-            FROM JOIN user_fk ON user.role = user.user_fk
+    $request = $bdd->prepare("
+        SELECT user_role.id, role.role, user.username
+        FROM user_role
+            INNER JOIN role ON user_role.role_fk = role.id
+            INNER JOIN user ON user_role.user_fk = user.id
 ");
 
 $request->execute();
-echo "<pre>";
+echo '<pre>';
 print_r($request->fetchAll());
 echo "</pre>";
+
+}
+
+catch (PDOException $exception) {
+    echo $exception->getMessage();
+}
 
 
